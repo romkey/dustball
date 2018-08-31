@@ -47,7 +47,7 @@ Consider CCS811, VOC and CO2 sensor. $9 in single unit quantities, AliExpress.
 
 ### Particle Count
 
-Plantronics PM5003
+[Plantower PMS5003](https://www.adafruit.com/product/3686) - $39, Adafruit.
 
 
 ### Total Cost
