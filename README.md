@@ -20,12 +20,6 @@ The hardware should support several common environmental sensors in order of imp
 - volatile organics
 - particle count
 
-It should be able to measure and report its own input voltage.
-
-It should express one of its I2C ports to an external optional connector along with power (5V/3.3V/GND).
-
-It might also express one of its SPI ports to an external optional connector (5V/3.3V/GND)..
-
 It shoud be powered via USB.
 
 Its USB port should be accessible externally for programming in addition to power.
@@ -34,20 +28,20 @@ It should include a tri-color LED for debugging and identification purposes.
 
 ### Temperature, Humidity and Pressure
 
-Consider BME280 - temperature/pressure/humidity. $2.57 in single unit quantities, AliExpress.
+The BME280 - temperature/pressure/humidity. $2.57 in single unit quantities, AliExpress.
 
 
 ### Light
 
-Consider TSL2561  Digital Luminosity sensor - $1 in single unit quantities, AliExpress.
+The TSL2561  Digital Luminosity sensor - $1 in single unit quantities, AliExpress.
 
 ### VOC
 
-Consider CCS811, VOC and CO2 sensor. $9 in single unit quantities, AliExpress.
+The CCS811, VOC and CO2 sensor. $9 in single unit quantities, AliExpress.
 
 ### Particle Count
 
-Plantronics PM5003
+The Plantronics PM5003
 
 
 ### Total Cost

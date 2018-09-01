@@ -3,7 +3,8 @@
 
 #define FURBALL_HOSTNAME "dustball"
 
-#define AIO_SERVER      "io.adafruit.comx"
+// just delete these to not include MQTT support
+#define AIO_SERVER      "io.adafruit.com"
 #define AIO_SERVERPORT  1883
 #define AIO_USERNAME    "YOUR ADAFRUIT IO PUSERNAME"
 #define AIO_KEY         "YOUR ADAFRUIT IO API KEY"
@@ -11,8 +12,12 @@
 // update once every UPDATE_DELAY milliseconds
 #define UPDATE_DELAY 60*1000
 
+// delete this to not include REST API support
+// or change it to use a different server
 #define REST_API_ENDPOINT "http://dustball.herokuapp.com/samples"
 
-// IFTTT boot notifications
+// IFTTT boot notifications - you'll need to set up your own IFTTT
+// webhook for this to work correctly.
+// delete this to not use IFTTT
 #define IFTTT_API_KEY    "YOUR IFTTT API KEY"
 #define IFTTT_EVENT_NAME "dustball"

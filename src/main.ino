@@ -5,6 +5,10 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
+// config.h contains private information and is not distributed with
+// the project files. Look for config-example.h and edit it to set
+// things like Wifi SSID, IFTTT API Keys, and MQTT and REST API
+// information
 #include "config.h"
 
 #include <ArduinoOTA.h>
@@ -24,13 +28,20 @@ PMS_Sensor pms5003(UPDATE_DELAY, 0, 0, false);
 Uptime uptime;
 
 
+#ifdef IFTTT_API_KEY
+#include <IFTTTWebhook.h>
+IFTTTWebhook ifttt(IFTTT_API_KEY, IFTTT_EVENT_NAME);
+#endif
+
+
+
+
+#ifdef AIO_SERVER
+
 #include <Adafruit_MQTT.h>
 #include <Adafruit_MQTT_Client.h>
 
 WiFiClient client;
-
-#include <IFTTTWebhook.h>
-IFTTTWebhook ifttt(IFTTT_API_KEY, IFTTT_EVENT_NAME);
 
 Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
 
@@ -78,10 +89,13 @@ void mqtt_connect(void) {
 
   Serial.println("Adafruit IO Connected!");
 }
+#endif
 
+
+#ifdef IFTTT_API_KEY
 #include <rom/rtc.h>
 
-char* reboot_reason(int code) {
+const char* reboot_reason(int code) {
   switch(code) {
     case 1 : return "POWERON_RESET";          /**<1, Vbat power on reset*/
     case 3 : return "SW_RESET";               /**<3, Software reset digital core*/
@@ -101,6 +115,7 @@ char* reboot_reason(int code) {
     default : return "NO_MEAN";
   }
 }
+#endif
   
 void setup() {
   char hostname[sizeof(FURBALL_HOSTNAME) + 8];
@@ -126,7 +141,9 @@ void setup() {
   Serial.println();
   Serial.println("Connected!");
 
+#ifdef IFTTT_API_KEY
   ifttt.trigger("reboot", reboot_reason(rtc_get_reset_reason(0)),  reboot_reason(rtc_get_reset_reason(1)));
+#endif
 
   if(!MDNS.begin(hostname))
     Serial.println("Error setting up MDNS responder!");
@@ -198,34 +215,42 @@ void loop() {
     pressure_feed.publish(bme280.pressure());
     humidity_feed.publish(bme280.humidity());
 
+#ifdef VERBOSE
     Serial.printf("Temperature %d\n", bme280.temperature());
     Serial.printf("Pressure %d\n", bme280.pressure());
     Serial.printf("Humidity %d\n", bme280.humidity());
+#endif
   }
 
   if(ccs811.ready_for_update()) {
     eco2_feed.publish(ccs811.eco2());
     voc_feed.publish(ccs811.voc());
 
+#ifdef VERBOSE
     Serial.printf("ECO2 %d\n", ccs811.eco2());
     Serial.printf("VOC %d\n", ccs811.voc());
+#endif
   }
 
   if(tsl2561.ready_for_update()) {
     lux_feed.publish(tsl2561.lux());
     ir_feed.publish(tsl2561.ir());
 
+#ifdef VERBOSE
     Serial.printf("IR %d\n", tsl2561.ir());
     Serial.printf("Visible %d\n", tsl2561.visible());
     Serial.printf("Full %d\n", tsl2561.full());
     Serial.printf("Lux %d\n", tsl2561.lux());
+#endif
   }
 
 
   if(pms5003.ready_for_update()) {
+#ifdef VERBOSE
     Serial.printf("PMS5003 1.0 %d\n", pms5003.density_1_0());
     Serial.printf("PMS5003 2.5 %d\n", pms5003.density_2_5());
     Serial.printf("PMS5003 10.0 %d\n", pms5003.density_10_0());
+#endif
   }
 
   if(millis() - last_loop < UPDATE_DELAY)
@@ -233,16 +258,20 @@ void loop() {
 
   last_loop = millis();
 
+#ifdef AIO_SERVER
   if(! mqtt.ping(3)) {
     if(! mqtt.connected())
       mqtt_connect();
   }
 
   uptime_feed.publish((unsigned)uptime.uptime()/1000);
-  Serial.printf("Uptime %.2f seconds\n", uptime.uptime() / 1000.0);
-
   freeheap_feed.publish(ESP.getFreeHeap());
+#endif
+
+#ifdef VERBOSE
+  Serial.printf("Uptime %.2f seconds\n", uptime.uptime() / 1000.0);
   Serial.printf("Free heap %u bytes\n", ESP.getFreeHeap());
+#endif
 
 #ifdef REST_API_ENDPOINT
   char buffer[500];
@@ -253,7 +282,10 @@ void loop() {
 	   ESP.getFreeHeap(), uptime.uptime()/1000,
 	   tsl2561.lux(), tsl2561.full(), tsl2561.ir(), tsl2561.visible());
 
+#ifdef VERBOSE
     Serial.println(buffer);
+#endif
+
     post(buffer);
 #endif
 }
@@ -264,11 +296,14 @@ void post(char *json) {
   http.begin(String(REST_API_ENDPOINT));
   http.addHeader("Content-Type", "application/json");
   int response = http.POST(json);
+
+#ifdef VERBOSE
   if(response > 0) {
     Serial.printf("HTTP status code %d\n", response);
   } else {
     Serial.printf("HTTPClient error %d\n", response);
   }
+#endif
 
   http.end();
 }
