@@ -275,7 +275,7 @@ void loop() {
 
 #ifdef REST_API_ENDPOINT
   char buffer[500];
-  snprintf(buffer, 500, "{\"temperature\": %d, \"humidity\": %d, \"pressure\": %d, \"eco2\": %d, \"tvoc\": %d, \"pm1\": %d, \"pm25\": %d, \"pm10\": %d, \"freeheap\": %d, \"uptime\": %lu, \"lux\": %d, \"full_light\": %d, \"ir\": %d, \"visible\": %d }",
+  snprintf(buffer, 500, "{\"temperature\": %0.2f, \"humidity\": %0.2f, \"pressure\": %0.2f, \"eco2\": %d, \"tvoc\": %d, \"pm1\": %d, \"pm25\": %d, \"pm10\": %d, \"freeheap\": %d, \"uptime\": %lu, \"lux\": %d, \"full_light\": %d, \"ir\": %d, \"visible\": %d }",
 	   bme280.temperature(), bme280.humidity(), bme280.pressure(),
 	   ccs811.eco2(), ccs811.voc(), 
 	   pms5003.density_1_0(), pms5003.density_2_5(), pms5003.density_10_0(),
