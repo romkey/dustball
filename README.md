@@ -1,5 +1,7 @@
 # The Dustball
 
+** Dustball functionality has been merged into the [Furball](https://github.com/HomeBusProjects/furball) codebase. No further work will happen with this repo **
+
 Dustball is an open-source hardware project based on Furball, which is an open-source hardware project intended to help with the research and development of HomeBus, an IoT auto-provisioning framework.
 
 HomeBus is nowhere near ready to go and we want to use Dustball now, so Dustball will start out reporting via a REST API to the Dustball server.
